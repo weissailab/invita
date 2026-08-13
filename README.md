@@ -3,8 +3,8 @@
 Invitaciones digitales que se abren como un sobre y se confirman por WhatsApp.
 Bodas, quince, cumpleaños, grados, baby showers, bautizos y eventos de empresa.
 
-**En vivo:** https://weissailab.github.io/invita/
-**Ejemplo:** https://weissailab.github.io/invita/#/ejemplo
+**En vivo:** https://invita.weissailab.com/
+**Ejemplo:** https://invita.weissailab.com/#/ejemplo
 
 Hecho por [Weiss AI Lab](https://weissailab.com).
 
