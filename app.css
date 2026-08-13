@@ -1,0 +1,418 @@
+/* Invita — invitaciones digitales. Weiss AI Lab.
+   Dos mundos en una sola hoja de estilos:
+   1) el laboratorio (landing + editor), sobrio y de sistema;
+   2) la invitación (.inv), que es la que tiene que verse bonita en el celular
+      de un invitado que la recibió por WhatsApp.
+   Los temas solo cambian variables dentro de .inv. */
+
+:root {
+  --bg: #FBF9F6;
+  --tinta: #1D1B18;
+  --suave: #6B655C;
+  --linea: #E4DED4;
+  --marca: #8C6A3F;
+  --marca-osc: #6E5231;
+  --ok: #1B8A5A;
+  --alerta: #B4551E;
+  --papel: #fff;
+  --r: 14px;
+  --sombra: 0 1px 2px rgba(29, 27, 24, .05), 0 8px 24px rgba(29, 27, 24, .06);
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --script: "Great Vibes", "Cormorant Garamond", cursive;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--tinta);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  overflow-wrap: break-word;
+}
+
+img { max-width: 100%; display: block; }
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: var(--marca-osc); }
+
+.wrap { max-width: 720px; margin: 0 auto; padding: 20px 18px 64px; }
+.wrap.ancho { max-width: 980px; }
+
+h1, h2, h3 { line-height: 1.2; margin: 0 0 10px; font-weight: 600; }
+h1 { font-size: 30px; letter-spacing: -.02em; }
+h2 { font-size: 21px; }
+h3 { font-size: 17px; }
+p { margin: 0 0 12px; }
+.cs { color: var(--suave); font-size: 14.5px; }
+.centro { text-align: center; }
+
+/* ---------------- botones ---------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--marca);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform .12s ease, filter .12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:active { transform: scale(.97); }
+.btn:hover { filter: brightness(1.06); }
+.btn.ghost { background: transparent; color: var(--marca-osc); box-shadow: inset 0 0 0 1.5px var(--linea); }
+.btn.plano { background: var(--tinta); }
+.btn.wa { background: #1FA855; }
+.btn.chico { min-height: 38px; padding: 0 14px; font-size: 14.5px; }
+.btn.ancho { width: 100%; }
+.btn[disabled] { opacity: .45; pointer-events: none; }
+.btns { display: flex; flex-wrap: wrap; gap: 10px; }
+
+/* ---------------- tarjetas y campos ---------------- */
+
+.card {
+  background: var(--papel);
+  border: 1px solid var(--linea);
+  border-radius: var(--r);
+  padding: 18px;
+  margin: 0 0 16px;
+  box-shadow: var(--sombra);
+}
+
+.campo { margin: 0 0 14px; }
+.campo label { display: block; font-size: 14px; font-weight: 600; margin: 0 0 6px; }
+.campo .pista { display: block; font-weight: 400; color: var(--suave); font-size: 13px; margin-top: 2px; }
+.campo input, .campo textarea, .campo select {
+  width: 100%;
+  min-height: 48px;
+  padding: 11px 13px;
+  border: 1.5px solid var(--linea);
+  border-radius: 11px;
+  background: #fff;
+  outline: 0;
+}
+.campo textarea { min-height: 84px; resize: vertical; line-height: 1.45; }
+.campo input:focus, .campo textarea:focus, .campo select:focus { border-color: var(--marca); }
+.fila { display: flex; gap: 10px; }
+.fila > * { flex: 1; min-width: 0; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  border: 1.5px solid var(--linea);
+  background: #fff;
+  border-radius: 999px;
+  padding: 9px 14px;
+  font-size: 14.5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.chip[aria-pressed="true"] { border-color: var(--marca); background: #FBF4EA; font-weight: 600; }
+
+.temas { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; }
+.tema-op {
+  border: 1.5px solid var(--linea);
+  border-radius: 12px;
+  padding: 8px;
+  background: #fff;
+  cursor: pointer;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--suave);
+}
+.tema-op[aria-pressed="true"] { border-color: var(--marca); box-shadow: 0 0 0 3px #F3E7D6; color: var(--tinta); font-weight: 600; }
+.tema-op .muestra { height: 42px; border-radius: 8px; margin-bottom: 6px; }
+
+.aviso { border-radius: 12px; padding: 11px 13px; font-size: 14px; margin: 0 0 14px; }
+.aviso.ok { background: #E9F6EF; color: #14603F; }
+.aviso.amb { background: #FDF1E5; color: #8A4517; }
+
+/* ---------------- landing ---------------- */
+
+.hero { padding: 26px 0 6px; text-align: center; }
+.hero .kicker { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--marca); font-weight: 700; }
+.hero h1 { font-family: var(--serif); font-size: 40px; font-weight: 600; margin: 10px 0 12px; }
+.hero h1 em { font-family: var(--script); font-style: normal; font-size: 1.25em; color: var(--marca); }
+.hero p { font-size: 17px; color: var(--suave); max-width: 34ch; margin: 0 auto 20px; }
+.hero .btns { justify-content: center; }
+
+.puntos { list-style: none; margin: 22px 0 0; padding: 0; display: grid; gap: 12px; }
+.puntos li { display: flex; gap: 11px; align-items: flex-start; font-size: 15px; }
+.puntos .ic { font-size: 20px; line-height: 1.2; flex: 0 0 auto; }
+.puntos b { display: block; }
+
+.pasos { counter-reset: p; list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.pasos li { position: relative; padding-left: 38px; font-size: 15px; }
+.pasos li::before {
+  counter-increment: p; content: counter(p);
+  position: absolute; left: 0; top: -1px;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: #F3E7D6; color: var(--marca-osc);
+  display: grid; place-items: center; font-size: 14px; font-weight: 700;
+}
+
+.pie { text-align: center; color: var(--suave); font-size: 13px; padding: 26px 0 0; border-top: 1px solid var(--linea); margin-top: 26px; }
+
+/* ---------------- editor ---------------- */
+
+.barra {
+  position: sticky; top: 0; z-index: 30;
+  background: rgba(251, 249, 246, .92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--linea);
+  padding: 10px 18px;
+  display: flex; align-items: center; gap: 10px;
+}
+.barra .marca { font-weight: 700; margin-right: auto; display: flex; align-items: center; gap: 7px; }
+.barra .marca span { font-size: 19px; }
+
+.medidor { height: 6px; border-radius: 4px; background: var(--linea); overflow: hidden; margin: 6px 0 4px; }
+.medidor i { display: block; height: 100%; background: var(--ok); transition: width .2s ease; }
+.medidor.amb i { background: #E0A33A; }
+.medidor.rojo i { background: #C64A2E; }
+
+.lista-ag { display: grid; gap: 8px; margin: 0 0 10px; }
+.lista-ag .it { display: flex; gap: 8px; align-items: center; }
+.lista-ag .it input { min-height: 44px; }
+.lista-ag .it .h { flex: 0 0 92px; }
+.lista-ag .it .q { flex: 1; }
+.quitar {
+  flex: 0 0 auto; width: 38px; height: 38px; border-radius: 10px;
+  border: 1.5px solid var(--linea); background: #fff; cursor: pointer; color: var(--suave);
+}
+
+.marco {
+  border: 10px solid #1D1B18;
+  border-radius: 34px;
+  overflow: hidden;
+  background: #000;
+  max-width: 360px;
+  margin: 0 auto;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, .22);
+}
+.marco .pantalla { height: 620px; overflow-y: auto; overflow-x: hidden; background: #fff; position: relative; }
+
+.invitados { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+.invitados td { padding: 9px 6px; border-bottom: 1px solid var(--linea); vertical-align: middle; }
+.invitados td:first-child { font-weight: 600; }
+.invitados td:last-child { text-align: right; white-space: nowrap; }
+
+.linkbox {
+  display: block; width: 100%; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12.5px; background: #F6F2EC; border: 1px solid var(--linea);
+  border-radius: 10px; padding: 10px; word-break: break-all; max-height: 96px; overflow: auto; color: var(--suave);
+}
+
+.nequi { background: linear-gradient(160deg, #FDF6EC, #fff); border-color: #EBD9BF; }
+.nequi .num { font-size: 22px; font-weight: 700; letter-spacing: .02em; margin: 8px 0 12px; }
+
+.toast {
+  position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(10px);
+  background: var(--tinta); color: #fff; padding: 12px 18px; border-radius: 999px;
+  font-size: 14.5px; z-index: 90; opacity: 0; pointer-events: none; transition: all .22s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .2); max-width: 90vw; text-align: center;
+}
+.toast.ver { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* =====================================================================
+   LA INVITACIÓN
+   Todo lo de aquí abajo vive dentro de .inv y se pinta con variables de
+   tema, para que un tema nuevo sea solo un bloque de variables.
+   ===================================================================== */
+
+.inv {
+  --papel: #FFFDF9;
+  --tinta: #2B2620;
+  --suave: #7A6E5E;
+  --oro: #A9873F;
+  --acento: #C08497;
+  --velo: rgba(169, 135, 63, .16);
+  position: relative;
+  min-height: 100%;
+  background: var(--papel);
+  color: var(--tinta);
+  overflow: hidden;
+}
+
+.inv[data-tema="noche"]   { --papel: #131A2B; --tinta: #F3EEE4; --suave: #A9B0C2; --oro: #D9B872; --acento: #D9B872; --velo: rgba(217, 184, 114, .18); }
+.inv[data-tema="botanico"]{ --papel: #F7F8F3; --tinta: #23301F; --suave: #6C7A62; --oro: #6E8B57; --acento: #A8BE8F; --velo: rgba(110, 139, 87, .16); }
+.inv[data-tema="fiesta"]  { --papel: #FFF9F2; --tinta: #2A1D2E; --suave: #7B6A80; --oro: #E0533D; --acento: #F2B33D; --velo: rgba(224, 83, 61, .14); }
+.inv[data-tema="bebe"]    { --papel: #FBF7FF; --tinta: #2E2A3A; --suave: #7C7590; --oro: #8FA9D8; --acento: #F0B8C8; --velo: rgba(143, 169, 216, .18); }
+.inv[data-tema="tinta"]   { --papel: #FFFFFF; --tinta: #14120F; --suave: #6E6A63; --oro: #14120F; --acento: #8C8579; --velo: rgba(20, 18, 15, .08); }
+
+/* --- el sobre --- */
+
+.sobre {
+  position: absolute; inset: 0; z-index: 20;
+  display: grid; place-items: center;
+  background: var(--papel);
+  padding: 24px;
+  text-align: center;
+  transition: opacity .5s ease .35s, visibility .5s ease .35s;
+}
+.sobre.abierto { opacity: 0; visibility: hidden; }
+
+.sobre .paquete { width: min(280px, 78vw); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+/* Doble declaración a propósito: los WebView de Android viejos no entienden
+   color-mix() y descartarían la regla entera, dejando el sobre transparente.
+   La primera línea es el respaldo plano; la segunda la pisa donde sí se puede. */
+.sobre .cuerpo {
+  position: relative; width: 100%; aspect-ratio: 3 / 2;
+  background: var(--velo);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--oro) 16%, var(--papel)), var(--papel));
+  border: 1px solid var(--velo);
+  border-radius: 8px;
+  box-shadow: 0 16px 38px rgba(0, 0, 0, .16);
+  overflow: hidden;
+}
+.sobre .solapa {
+  position: absolute; left: 0; top: 0; width: 100%; height: 62%;
+  background: var(--oro);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--oro) 26%, var(--papel)), color-mix(in srgb, var(--oro) 12%, var(--papel)));
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top center;
+  transition: transform .75s cubic-bezier(.6, -.28, .74, .05);
+  z-index: 2;
+}
+.sobre.abierto .solapa { transform: rotateX(180deg); }
+.sobre .sello {
+  position: absolute; left: 50%; top: 54%; transform: translate(-50%, -50%);
+  width: 62px; height: 62px; border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, color-mix(in srgb, var(--acento) 70%, #fff), var(--acento));
+  color: #fff; display: grid; place-items: center;
+  font-family: var(--serif); font-size: 26px; font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .25); z-index: 3;
+  transition: transform .4s ease, opacity .4s ease;
+}
+.sobre.abierto .sello { transform: translate(-50%, -50%) scale(.4); opacity: 0; }
+.sobre .tarjetita {
+  position: absolute; left: 7%; top: 16%; width: 86%; height: 78%;
+  background: #fff; border-radius: 4px; z-index: 1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+  transition: transform .75s cubic-bezier(.2, .8, .2, 1) .25s;
+}
+.sobre.abierto .tarjetita { transform: translateY(-46%) scale(1.04); }
+
+.sobre .quien { font-family: var(--script); font-size: 34px; color: var(--oro); margin: 20px 0 2px; line-height: 1.1; }
+.sobre .toca { font-size: 14px; color: var(--suave); letter-spacing: .04em; }
+.sobre .toca b { display: block; font-size: 15px; color: var(--tinta); margin-top: 6px; }
+@keyframes latir { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+.sobre .paquete { animation: latir 2.6s ease-in-out infinite; }
+
+/* --- la hoja --- */
+
+.hoja { position: relative; z-index: 10; padding: 0 0 34px; }
+.hoja > * { position: relative; z-index: 2; }
+
+.portada { padding: 46px 24px 26px; text-align: center; }
+.portada .tipo { font-size: 11.5px; letter-spacing: .3em; text-transform: uppercase; color: var(--oro); font-weight: 700; }
+.portada .nom { font-family: var(--script); font-size: 52px; line-height: 1.06; margin: 14px 0 4px; color: var(--tinta); }
+.portada .nom.largo { font-size: 38px; }
+.portada .amp { font-family: var(--serif); font-size: 26px; color: var(--oro); font-style: italic; margin: 2px 0; }
+.portada .frase { font-family: var(--serif); font-size: 18px; font-style: italic; color: var(--suave); margin: 14px auto 0; max-width: 28ch; }
+.portada .saludo { font-family: var(--serif); font-size: 20px; color: var(--oro); margin-bottom: 6px; }
+
+.orn { display: block; margin: 18px auto; width: 128px; height: 14px; opacity: .85; }
+.orn path, .orn circle { stroke: var(--oro); fill: none; stroke-width: 1.2; }
+.orn circle.p { fill: var(--oro); stroke: none; }
+
+.retrato { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+.retrato-mar { padding: 0 24px; margin: 0 0 6px; }
+.retrato-mar img { border-radius: 6px; box-shadow: 0 10px 30px rgba(0, 0, 0, .14); }
+
+.bloque { padding: 22px 24px; text-align: center; }
+.bloque + .bloque { border-top: 1px solid var(--velo); }
+.bloque .rot { font-size: 11.5px; letter-spacing: .24em; text-transform: uppercase; color: var(--oro); font-weight: 700; margin-bottom: 10px; }
+.bloque .gr { font-family: var(--serif); font-size: 25px; line-height: 1.25; }
+.bloque .md { font-size: 15.5px; }
+.bloque .ch { font-size: 14px; color: var(--suave); margin-top: 4px; }
+
+.cuenta { display: flex; justify-content: center; gap: 8px; margin: 6px 0 2px; }
+.cuenta .u {
+  min-width: 66px; padding: 10px 6px; border-radius: 12px;
+  background: var(--velo);
+}
+.cuenta .n { font-family: var(--serif); font-size: 28px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+.cuenta .e { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--suave); margin-top: 4px; }
+.cuenta.hoy .n { color: var(--oro); }
+
+.agenda { list-style: none; padding: 0; margin: 4px 0 0; text-align: left; max-width: 300px; margin-inline: auto; }
+.agenda li { display: flex; gap: 12px; padding: 9px 0; border-bottom: 1px dashed var(--velo); font-size: 15px; }
+.agenda li:last-child { border-bottom: 0; }
+.agenda .h { font-weight: 700; color: var(--oro); flex: 0 0 62px; font-variant-numeric: tabular-nums; }
+
+.ibtn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 46px; padding: 0 20px; border-radius: 999px; border: 0;
+  background: var(--oro); color: var(--papel);
+  font-family: var(--sans); font-size: 15.5px; font-weight: 600;
+  text-decoration: none; cursor: pointer; transition: transform .12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.ibtn:active { transform: scale(.97); }
+.ibtn.linea { background: transparent; color: var(--oro); box-shadow: inset 0 0 0 1.5px var(--oro); }
+.ibtns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 12px; }
+
+.rsvp { padding: 26px 24px 30px; text-align: center; background: var(--velo); border-top: 1px solid var(--velo); }
+.rsvp .gr { font-family: var(--serif); font-size: 24px; margin-bottom: 4px; }
+.rsvp .acomp { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 14px 0 16px; }
+.rsvp .acomp button {
+  width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--oro);
+  background: transparent; color: var(--oro); font-size: 20px; cursor: pointer; line-height: 1;
+}
+.rsvp .acomp .v { font-family: var(--serif); font-size: 20px; min-width: 116px; }
+.rsvp .ibtn { width: 100%; max-width: 300px; }
+
+.creditos { text-align: center; padding: 22px 24px 6px; font-size: 12.5px; color: var(--suave); }
+.creditos a { color: var(--oro); text-decoration: none; font-weight: 600; }
+
+/* --- partículas --- */
+
+.particulas { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+/* Se anima `top` en porcentaje y no `translateY` en vh a propósito: el mismo
+   componente se pinta a pantalla completa y dentro del marco de 620px del
+   editor, y los vh se medirían siempre contra la ventana. */
+.particulas i {
+  position: absolute; top: -10%; display: block; line-height: 1;
+  animation: caer linear infinite;
+}
+@keyframes caer {
+  0% { top: -10%; opacity: 0; transform: rotate(0deg); }
+  12% { opacity: .55; }
+  88% { opacity: .55; }
+  100% { top: 106%; opacity: 0; transform: rotate(400deg); }
+}
+
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.visto { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sobre .paquete { animation: none; }
+  .particulas { display: none; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .sobre .solapa, .sobre .tarjetita, .sobre .sello { transition: none; }
+}
+
+/* La invitación a pantalla completa (no dentro del marco del editor) */
+.pagina-inv { position: fixed; inset: 0; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+.pagina-inv .inv { min-height: 100%; }
+
+@media (min-width: 720px) {
+  .col2 { display: grid; grid-template-columns: 1fr 380px; gap: 26px; align-items: start; }
+  .col2 .lado { position: sticky; top: 74px; }
+  .hero h1 { font-size: 48px; }
+}
