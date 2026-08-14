@@ -4,13 +4,20 @@
 (function () {
   'use strict';
 
+  /* El kit compartido de los productos libres. Lo carga core/core.js, que va
+     antes que este archivo en index.html. */
+  var W = window.Weiss;
+
   var NEQUI = '3171715071';
   var SOPORTE_WA = '573171715071';
   var APP = document.getElementById('app');
 
   /* La dirección de esta copia de la app, sin el archivo ni el fragmento.
-     De aquí salen todos los links que se comparten. */
-  var BASE = location.origin + location.pathname.replace(/index\.html$/, '');
+     De aquí salen todos los links que se comparten. Invita todavía no tiene
+     direcciones fijas; el día que las tenga, `W.raizDe(slug)` ya sabe quitar
+     el nombre del negocio de la ruta — que es el fallo que ya se comió a
+     MiCarta y a MiCita. */
+  var BASE = W.raizDe();
 
   /* Presupuesto del link. WhatsApp corta los mensajes muy largos y un link
      kilométrico da desconfianza al invitado, así que la foto se comprime hasta
@@ -48,62 +55,15 @@
 
   /* ---------------------------------------------------------------
      UTILIDADES
+     Lo que no sabe nada de invitaciones vive en el core (core/core.js,
+     copia de Activos/weiss-core/web/core.js en el repo del Lab). Aquí
+     solo se le pone nombre corto para no tocar los sitios donde se usa.
      --------------------------------------------------------------- */
 
-  function esc(s) {
-    return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  }
-
-  function $(sel, raiz) { return (raiz || document).querySelector(sel); }
-  function $$(sel, raiz) { return Array.prototype.slice.call((raiz || document).querySelectorAll(sel)); }
-
-  var toastT = null;
-  function toast(msg) {
-    var t = $('#toast');
-    if (!t) {
-      t = document.createElement('div');
-      t.id = 'toast';
-      t.className = 'toast';
-      document.body.appendChild(t);
-    }
-    t.textContent = msg;
-    t.classList.add('ver');
-    clearTimeout(toastT);
-    toastT = setTimeout(function () { t.classList.remove('ver'); }, 2400);
-  }
-
-  function copiar(txt, msg) {
-    function viejo() {
-      var ta = document.createElement('textarea');
-      ta.value = txt;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      try { document.execCommand('copy'); } catch (e) {}
-      document.body.removeChild(ta);
-      toast(msg || 'Copiado');
-    }
-    if (navigator.clipboard && location.protocol !== 'file:') {
-      navigator.clipboard.writeText(txt).then(function () { toast(msg || 'Copiado'); }, viejo);
-    } else { viejo(); }
-  }
-
-  /* Normaliza a formato internacional colombiano: 3171715071 -> 573171715071.
-     Se aceptan espacios, guiones y el +57 que la gente escribe de mil formas. */
-  function waNum(n) {
-    var d = String(n || '').replace(/\D/g, '');
-    if (!d) return '';
-    if (d.length === 10 && d.charAt(0) === '3') return '57' + d;
-    if (d.length === 12 && d.slice(0, 2) === '57') return d;
-    return d;
-  }
-
-  function waLink(num, texto) {
-    return 'https://wa.me/' + waNum(num) + '?text=' + encodeURIComponent(texto);
-  }
+  var esc = W.esc, $ = W.$, $$ = W.$$;
+  var toast = W.toast, copiar = W.copiar;
+  var waNum = W.waNum, waLink = W.waLink;
+  var dosD = W.dosD, hash = W.hash;
 
   /* --- fechas ---
      La fecha se guarda como 'YYYY-MM-DD' y la hora como 'HH:MM'. Se arma la
@@ -133,8 +93,6 @@
     return h12 + ':' + mm + ' ' + suf;
   }
 
-  function dosD(n) { return (n < 10 ? '0' : '') + n; }
-
   /* ---------------------------------------------------------------
      EL MODELO
      Claves cortas a propósito: cada letra que se ahorra aquí es un
@@ -161,22 +119,10 @@
   }
 
   var S = nueva();
-  var LS = 'invita:borrador';
+  var borrador = W.almacen('invita:borrador');
 
-  function guardar() {
-    try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {}
-  }
-
-  function cargar() {
-    try {
-      var x = JSON.parse(localStorage.getItem(LS) || 'null');
-      if (x && typeof x === 'object') {
-        var base = nueva();
-        for (var k in base) if (x[k] !== undefined) base[k] = x[k];
-        S = base;
-      }
-    } catch (e) {}
-  }
+  function guardar() { borrador.guardar(S); }
+  function cargar() { S = borrador.cargar(nueva()); }
 
   function codificar(d) {
     return LZString.compressToEncodedURIComponent(JSON.stringify(d));
@@ -532,10 +478,7 @@
       (tipo === 'tel' ? ' inputmode="numeric"' : '') + '></div>';
   }
 
-  function campoArea(k, etiqueta, ph) {
-    return '<div class="campo"><label for="c_' + k + '">' + etiqueta + '</label>' +
-      '<textarea id="c_' + k + '" data-k="' + k + '" placeholder="' + esc(ph) + '">' + esc(S[k]) + '</textarea></div>';
-  }
+  function campoArea(k, etiqueta, ph) { return W.campoArea(k, etiqueta, ph, S[k]); }
 
   /* La foto se reduce hasta caber en el presupuesto. Se baja primero la
      calidad y, si aun así no entra, el ancho: una foto borrosa se ve mal, pero
@@ -1013,12 +956,6 @@
     a.click();
     setTimeout(function () { URL.revokeObjectURL(a.href); document.body.removeChild(a); }, 1200);
     toast('Guardado en tu calendario 📅');
-  }
-
-  function hash(s) {
-    var h = 0;
-    for (var i = 0; i < s.length; i++) { h = (h * 31 + s.charCodeAt(i)) | 0; }
-    return h;
   }
 
   /* ---------------------------------------------------------------
