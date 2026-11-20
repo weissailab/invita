@@ -122,7 +122,8 @@
       ft: '',
       cr: 1,
       ro: '', /* rótulo propio en vez del del tipo (opcional) */
-      hf: ''  /* hora de fin (opcional) */
+      hf: '', /* hora de fin (opcional) */
+      mc: ''  /* mensaje de confirmación propio, tal cual (opcional) */
     };
   }
 
@@ -810,11 +811,12 @@
         '<div class="rot" style="font-size:11.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--oro);font-weight:700;margin-bottom:8px">' + esc(T.rsvp) + '</div>' +
         '<div class="gr">Avísanos si vienes</div>' +
         '<div class="ch" style="color:var(--suave);font-size:14px">Se abre tu WhatsApp con el mensaje escrito. Solo le das enviar.</div>' +
-        '<div class="acomp">' +
+        /* con mensaje propio el contador no llegaría a ningún lado: se oculta */
+        (d.mc ? '' : '<div class="acomp">' +
           '<button data-act="menos" aria-label="Menos personas">−</button>' +
           '<span class="v" id="cuantos">1 persona</span>' +
           '<button data-act="mas" aria-label="Más personas">+</button>' +
-        '</div>' +
+        '</div>') +
         '<a class="ibtn" id="btn-rsvp" target="_blank" rel="noopener" href="#">Confirmar mi asistencia ✅</a>' +
       '</div>');
     }
@@ -926,7 +928,7 @@
       if (btn) {
         var yo = quien ? 'Soy ' + quien + '. ' : '';
         var T = TIPOS[d.t] || TIPOS.otro;
-        var txt = '¡Hola! Confirmo mi asistencia ' + T.del + ' ' + nombreEvento(d) + '. ' +
+        var txt = d.mc ? d.mc : '¡Hola! Confirmo mi asistencia ' + T.del + ' ' + nombreEvento(d) + '. ' +
           yo + (cuantos === 1 ? 'Voy yo solo.' : 'Vamos ' + cuantos + ' personas.') + ' 🎉';
         btn.href = waLink(d.w, txt);
       }
