@@ -181,6 +181,11 @@ h2 { font-size: 21px; }
 .inv[data-tema="fiesta"]  { --papel: #FFF9F2; --tinta: #2A1D2E; --suave: #7B6A80; --oro: #E0533D; --acento: #F2B33D; --velo: rgba(224, 83, 61, .14); }
 .inv[data-tema="bebe"]    { --papel: #FBF7FF; --tinta: #2E2A3A; --suave: #7C7590; --oro: #8FA9D8; --acento: #F0B8C8; --velo: rgba(143, 169, 216, .18); }
 .inv[data-tema="tinta"]   { --papel: #FFFFFF; --tinta: #14120F; --suave: #6E6A63; --oro: #14120F; --acento: #8C8579; --velo: rgba(20, 18, 15, .08); }
+.inv[data-tema="vino"]    { --papel: #5A0F17; --tinta: #FBF3E4; --suave: #E9D3B4; --oro: #E2BE6A; --acento: #C9963A; --velo: rgba(226, 190, 106, .18); }
+.inv[data-tema="vino"] { background: #5A0F17; background: radial-gradient(120% 70% at 50% 0%, #8A1A26 0%, #5A0F17 55%, #3E0910 100%); }
+.inv[data-tema="vino"] .sobre { background: #5A0F17; background: radial-gradient(120% 90% at 50% 20%, #8A1A26 0%, #5A0F17 60%, #3E0910 100%); }
+.inv[data-tema="vino"] .sobre .cuerpo { background: #F3E6CC; background: linear-gradient(160deg, #FBF3E4, #E8D3AE); border-color: rgba(0,0,0,.08); }
+.inv[data-tema="vino"] .sobre .solapa { background: #E8D3AE; background: linear-gradient(180deg, #F1E1C2, #DCC398); }
 
 /* --- el sobre --- */
 
@@ -251,7 +256,9 @@ h2 { font-size: 21px; }
 .portada .nom { font-family: var(--script); font-size: 52px; line-height: 1.06; margin: 14px 0 4px; color: var(--tinta); }
 .portada .nom.largo { font-size: 38px; }
 .portada .amp { font-family: var(--serif); font-size: 26px; color: var(--oro); font-style: italic; margin: 2px 0; }
-.portada .frase { font-family: var(--serif); font-size: 18px; font-style: italic; color: var(--suave); margin: 14px auto 0; max-width: 28ch; }
+.portada .frase { font-family: var(--serif); font-size: 18px; font-style: italic; color: var(--suave); margin: 14px auto 0; max-width: 28ch; white-space: pre-line; }
+.portada .frase.larga { font-size: 17.5px; line-height: 1.5; max-width: 36ch; }
+.bloque .md { white-space: pre-line; }
 .portada .saludo { font-family: var(--serif); font-size: 20px; color: var(--oro); margin-bottom: 6px; }
 
 .orn { display: block; margin: 18px auto; width: 128px; height: 14px; opacity: .85; }

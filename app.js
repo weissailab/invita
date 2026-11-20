@@ -17,7 +17,12 @@
      direcciones fijas; el día que las tenga, `W.raizDe(slug)` ya sabe quitar
      el nombre del negocio de la ruta — que es el fallo que ya se comió a
      MiCarta y a MiCita. */
-  var BASE = W.raizDe();
+  /* Versión de link corto (la de $20.000): una carpeta del repo, p. ej.
+     `sociedad-salesiana/index.html`, define `window.INVITA_FIJA` con los
+     datos y su `slug` antes de cargar este archivo. La invitación ya no viaja
+     en el link, así que la foto va como archivo en buena calidad. */
+  var FIJA = window.INVITA_FIJA || null;
+  var BASE = W.raizDe(FIJA && FIJA.slug);
 
   /* Presupuesto del link. WhatsApp corta los mensajes muy largos y un link
      kilométrico da desconfianza al invitado, así que la foto se comprime hasta
@@ -47,7 +52,8 @@
     botanico: { nom: 'Botánico',  c1: '#F7F8F3', c2: '#6E8B57', c3: '#A8BE8F', part: ['❁', '✽', '·'] },
     fiesta:   { nom: 'Fiesta',    c1: '#FFF9F2', c2: '#E0533D', c3: '#F2B33D', part: ['●', '▲', '■'] },
     bebe:     { nom: 'Bebé',      c1: '#FBF7FF', c2: '#8FA9D8', c3: '#F0B8C8', part: ['♡', '●', '·'] },
-    tinta:    { nom: 'Tinta',     c1: '#FFFFFF', c2: '#14120F', c3: '#8C8579', part: [] }
+    tinta:    { nom: 'Tinta',     c1: '#FFFFFF', c2: '#14120F', c3: '#8C8579', part: [] },
+    vino:     { nom: 'Vino',      c1: '#5A0F17', c2: '#E2BE6A', c3: '#B3202E', part: ['✦', '✧', '·'] }
   };
 
   var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
@@ -114,9 +120,13 @@
       rq: '', rn: '', rt: '',
       w: '',
       ft: '',
-      cr: 1
+      cr: 1,
+      ro: '', /* rótulo propio en vez del del tipo (opcional) */
+      hf: ''  /* hora de fin (opcional) */
     };
   }
+
+  function rotulo(d) { return (d.ro || '').trim() || (TIPOS[d.t] || TIPOS.otro).rot; }
 
   var S = nueva();
   var borrador = W.almacen('invita:borrador');
@@ -175,7 +185,16 @@
     document.body.classList.remove('viendo');
     var h = location.hash.replace(/^#/, '');
 
-    var mi = h.match(/^\/i\/([^/]+)(?:\/p\/(.*))?$/);
+    if (FIJA) {
+      var mf = h.match(/^\/p\/(.+)$/);
+      var qf = '';
+      if (mf) { try { qf = decodeURIComponent(mf[1]); } catch (e) { qf = mf[1]; } }
+      var df = nueva();
+      for (var kf in df) if (FIJA[kf] !== undefined) df[kf] = FIJA[kf];
+      return vistaInvitacion(df, qf);
+    }
+
+    var mi =h.match(/^\/i\/([^/]+)(?:\/p\/(.*))?$/);
     if (mi) {
       var d = decodificar(mi[1]);
       if (!d) return vistaError();
@@ -674,7 +693,7 @@
      --------------------------------------------------------------- */
 
   function vistaInvitacion(d, quien) {
-    document.title = nombreEvento(d) + ' — ' + ((TIPOS[d.t] || TIPOS.otro).rot);
+    document.title = FIJA && FIJA.titulo ? FIJA.titulo : nombreEvento(d) + ' — ' + rotulo(d);
     document.body.classList.add('viendo');
     APP.className = 'pagina-inv';
     APP.innerHTML = '';
@@ -726,11 +745,11 @@
     partes.push('<div class="hoja">' +
       '<div class="portada">' +
         (quien ? '<div class="saludo">' + esc(quien) + ',</div>' : '') +
-        '<div class="tipo">' + esc(T.rot) + '</div>' +
+        '<div class="tipo">' + esc(rotulo(d)) + '</div>' +
         orn() +
         '<div class="nom' + (largo ? ' largo' : '') + '">' + esc(nom) + '</div>' +
         (d.b ? '<div class="amp">&amp;</div><div class="nom' + (largo ? ' largo' : '') + '">' + esc(d.b) + '</div>' : '') +
-        (d.fr ? '<div class="frase">' + esc(d.fr) + '</div>' : '') +
+        (d.fr ? '<div class="frase' + (d.fr.length > 140 ? ' larga' : '') + '">' + esc(d.fr) + '</div>' : '') +
       '</div>');
 
     if (d.ft) {
@@ -741,7 +760,7 @@
     partes.push('<div class="bloque reveal">' +
       '<div class="rot">Cuándo</div>' +
       '<div class="gr">' + esc(fechaLarga(d.f)) + '</div>' +
-      (d.h ? '<div class="md">' + esc(horaBonita(d.h)) + '</div>' : '') +
+      (d.h ? '<div class="md">' + esc(horaBonita(d.h) + (d.hf ? ' a ' + horaBonita(d.hf) : '')) + '</div>' : '') +
       '<div class="cuenta" id="cuenta"></div>' +
       '<div class="ibtns"><button class="ibtn linea" data-act="ics">Agendar 📅</button></div>' +
     '</div>');
@@ -930,7 +949,8 @@
   function descargarICS(d) {
     var ini = fechaObj(d.f, d.h || '12:00');
     if (!ini) return;
-    var fin = new Date(ini.getTime() + 4 * 3600 * 1000);
+    var fin = d.hf ? fechaObj(d.f, d.hf) : null;
+    if (!fin || fin <= ini) fin = new Date(ini.getTime() + 4 * 3600 * 1000);
     function z(x) {
       return x.getUTCFullYear() + dosD(x.getUTCMonth() + 1) + dosD(x.getUTCDate()) + 'T' +
         dosD(x.getUTCHours()) + dosD(x.getUTCMinutes()) + '00Z';
@@ -942,7 +962,7 @@
       'UID:' + Math.abs(hash(codificar(d))) + '@invita',
       'DTSTAMP:' + z(new Date()),
       'DTSTART:' + z(ini), 'DTEND:' + z(fin),
-      'SUMMARY:' + lim(T.rot + ': ' + nombreEvento(d)),
+      'SUMMARY:' + lim(rotulo(d) + ' ' + nombreEvento(d)),
       'LOCATION:' + lim(((d.lu || '') + ' ' + (d.di || '')).trim()),
       'DESCRIPTION:' + lim(d.fr || ''),
       'END:VEVENT', 'END:VCALENDAR'
